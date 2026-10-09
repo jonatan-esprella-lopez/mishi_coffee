@@ -2,8 +2,10 @@ import { ArrowRightLeft, ShoppingBag, User } from "lucide-react";
 import logo from "../../assets/react.svg"
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import DesktopNav from "./DesktopNav";
+import type { NavItem } from "../../config/navigation";
 
-export default function Header() {
+export default function Header({ nav }: { nav: NavItem[] }) {
     const [isAdmin, setIsAdmin] = useState(false);
     const [cartCount, setCartCount] = useState(3);
     
@@ -19,9 +21,10 @@ export default function Header() {
                 </div>
             </div>
 
+            <DesktopNav items={nav} />
 
             <div className="flex flex-row items-center justify-center gap-2">
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
                 {isAdmin ? (
                     <button 
                         type="button"
@@ -53,10 +56,10 @@ export default function Header() {
                     type="button"
                     onClick={() => setIsAdmin((v) => !v)}
                     aria-label="Perfil"
-                    className="grid size-10 place-items-center rounded-pill bg-primary text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-pressed"
+                    className="grid size-10 place-items-center rounded-pill bg-primary text-on-secondary transition-colors hover:bg-primary-hover active:bg-primary-pressed"
                     >
                     <User className="size-5" />
-                    </button>
+                </button>
             </div>
         </header>
     );
