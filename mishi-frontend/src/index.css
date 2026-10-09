@@ -8,7 +8,7 @@
   /* Superficies */
   --background: #f4f7fc;
   --surface: #ffffff;
-  --surface-alt: #e6edf8; 
+  --surface-alt: #e6edf8;
   --border: #cbd6ea;
 
   /* Texto */
@@ -39,6 +39,13 @@
 
   /* Foco / anillo */
   --ring: #f5b21e;
+
+  --state-hover: 8%;
+  --state-pressed: 14%;
+
+  --foreground-subtle: #7686a6;
+  --foreground-inverse: #f4f7fc;
+  --link: #1f4287;
 }
 
 /* ---------- DARK (azul noche como el cartel del local) ---------- */
@@ -70,6 +77,10 @@
   --on-danger: #3a0808;
 
   --ring: #f6be3b;
+
+  --foreground-subtle: #6b80a8;
+  --foreground-inverse: #0d1a33;
+  --link: #f6be3b;
 }
 
 @theme inline {
@@ -100,6 +111,41 @@
   --color-on-danger: var(--on-danger);
 
   --color-ring: var(--ring);
+
+  /* ---- HOVER ---- */
+  --color-primary-hover: color-mix(in oklab, var(--primary) calc(100% - var(--state-hover)), var(--on-primary));
+  --color-secondary-hover: color-mix(in oklab, var(--secondary) calc(100% - var(--state-hover)), var(--on-secondary));
+  --color-tertiary-hover: color-mix(in oklab, var(--tertiary) calc(100% - var(--state-hover)), var(--on-tertiary));
+  --color-danger-hover: color-mix(in oklab, var(--danger) calc(100% - var(--state-hover)), var(--on-danger));
+
+  --color-primary-container-hover: color-mix(in oklab, var(--primary-container) calc(100% - var(--state-hover)), var(--on-primary-container));
+  --color-secondary-container-hover: color-mix(in oklab, var(--secondary-container) calc(100% - var(--state-hover)), var(--on-secondary-container));
+  --color-tertiary-container-hover: color-mix(in oklab, var(--tertiary-container) calc(100% - var(--state-hover)), var(--on-tertiary-container));
+
+  --color-surface-hover: color-mix(in oklab, var(--surface) calc(100% - var(--state-hover)), var(--foreground));
+  --color-surface-alt-hover: color-mix(in oklab, var(--surface-alt) calc(100% - var(--state-hover)), var(--foreground));
+
+  /* ---- PRESSED (active) ---- */
+  --color-primary-pressed: color-mix(in oklab, var(--primary) calc(100% - var(--state-pressed)), var(--on-primary));
+  --color-secondary-pressed: color-mix(in oklab, var(--secondary) calc(100% - var(--state-pressed)), var(--on-secondary));
+  --color-tertiary-pressed: color-mix(in oklab, var(--tertiary) calc(100% - var(--state-pressed)), var(--on-tertiary));
+  --color-danger-pressed: color-mix(in oklab, var(--danger) calc(100% - var(--state-pressed)), var(--on-danger));
+
+  --color-primary-container-pressed: color-mix(in oklab, var(--primary-container) calc(100% - var(--state-pressed)), var(--on-primary-container));
+  --color-secondary-container-pressed: color-mix(in oklab, var(--secondary-container) calc(100% - var(--state-pressed)), var(--on-secondary-container));
+  --color-tertiary-container-pressed: color-mix(in oklab, var(--tertiary-container) calc(100% - var(--state-pressed)), var(--on-tertiary-container));
+
+  --color-surface-pressed: color-mix(in oklab, var(--surface) calc(100% - var(--state-pressed)), var(--foreground));
+  --color-surface-alt-pressed: color-mix(in oklab, var(--surface-alt) calc(100% - var(--state-pressed)), var(--foreground));
+
+  /* ---- DISABLED ---- */
+  --color-disabled: color-mix(in oklab, var(--foreground) 12%, transparent);
+  --color-on-disabled: color-mix(in oklab, var(--foreground) 38%, transparent);
+
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-foreground-inverse: var(--foreground-inverse);
+  --color-link: var(--link);
+  --color-link-hover: color-mix(in oklab, var(--link) calc(100% - var(--state-hover) * 2), var(--foreground));
 }
 
 /* Tipografías y formas */
@@ -119,6 +165,7 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
+
   html.dark {
     color-scheme: dark;
   }
@@ -127,7 +174,10 @@
     @apply bg-background text-foreground font-body antialiased;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-heading;
   }
 
@@ -148,5 +198,23 @@
     html {
       scroll-behavior: auto;
     }
+  }
+
+  a {
+    color: var(--link);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+
+  ::placeholder {
+    color: var(--foreground-subtle);
+  }
+
+  ::selection {
+    background: var(--primary-container);
+    color: var(--on-primary-container);
   }
 }
