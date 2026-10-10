@@ -7,6 +7,7 @@ import HomePage from "./pages/public/HomePage";
 import UiPage from "./pages/dev/UiPage";
 import MichisPage from "./pages/public/MichisPage";
 import MichiDetallePage from "./pages/public/MichiDetallePage";
+import SolicitudAdopcionPage from "./pages/public/SolicitudAdopcionPage";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="michis" element={<MichisPage/>} />
         <Route path="michis/:id" element={<MichiDetallePage />} />
-        <Route path="michis/:id/adoptar" element={<PlaceholderPage title="Solicitud de adopción" />} />
+        <Route path="michis/:id/adoptar" element={<SolicitudAdopcionPage />} />
         <Route path="solicitud/confirmacion" element={<PlaceholderPage title="Solicitud recibida" />} />
         <Route path="reservas" element={<PlaceholderPage title="Reservas" />} />
         <Route path="menu" element={<PlaceholderPage title="Menú" />} />

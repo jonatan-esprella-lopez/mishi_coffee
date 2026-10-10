@@ -6,3 +6,6 @@ export { default as Input } from "./Input";
 export { default as StatCard } from "./StatCard";
 export { default as Tabs } from "./Tabs";
 export { buttonStyles } from "./button.styles";
+export { default as Checkbox } from "./Checkbox";
+export { default as ChoiceGroup } from "./ChoiceGroup";
+export { default as Textarea } from "./TextArea";
