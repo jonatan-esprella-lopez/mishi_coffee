@@ -1,0 +1,367 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────── ENUMS ─────────────
+
+enum Rol {
+  ADMIN
+  CAJERO
+  VETERINARIO
+  MESERO
+}
+
+enum Sexo {
+  MACHO
+  HEMBRA
+}
+
+enum EstadoGato {
+  EN_CUARENTENA
+  EN_TRATAMIENTO
+  DISPONIBLE
+  EN_PROCESO      // solicitud en curso
+  ADOPTADO
+}
+
+enum TipoRegistroSalud {
+  VACUNA
+  DESPARASITACION
+  CONTROL
+  CIRUGIA
+  OTRO
+}
+
+enum EstadoSolicitud {
+  NUEVA
+  EN_REVISION
+  ENTREVISTA
+  APROBADA
+  RECHAZADA
+  ENTREGADA
+}
+
+enum TipoExperiencia {
+  SALA_MIMOS
+  CINE
+  KARAOKE
+}
+
+enum EstadoReserva {
+  CONFIRMADA
+  ASISTIO
+  CANCELADA
+  NO_ASISTIO
+}
+
+enum MetodoPago {
+  QR
+  TRANSFERENCIA
+  EFECTIVO
+}
+
+enum TipoMovimiento {
+  INGRESO
+  EGRESO
+}
+
+enum CategoriaMovimiento {
+  CAFETERIA
+  DONACION
+  ALIMENTO
+  VETERINARIA
+  INSUMOS
+  OTRO
+}
+
+enum EstadoPedido {
+  PENDIENTE
+  PREPARANDO
+  SERVIDO
+  PAGADO
+  CANCELADO
+}
+
+enum TipoRecordatorio {
+  SEGUIMIENTO_7_DIAS
+  REFUERZO_VACUNA
+  OTRO
+}
+
+// ───────────── USUARIOS (staff) ─────────────
+
+model Usuario {
+  id        String   @id @default(uuid())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       Rol      @default(MESERO)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  registrosSalud RegistroSalud[]
+  movimientos    Movimiento[]
+  solicitudes    Solicitud[]     @relation("RevisadaPor")
+}
+
+// ───────────── GATOS ─────────────
+
+model Gato {
+  id        String     @id @default(uuid())
+  codigo    String     @unique            // ej: MC-2024-08
+  nombre    String
+  edadMeses Int
+  sexo      Sexo
+  raza      String?                       // ej: mestizo
+  color     String?
+  castrado  Boolean    @default(false)
+  pesoKg    Float?
+  estado    EstadoGato @default(EN_CUARENTENA)
+  fotoUrl   String?
+  descripcion String?
+  createdAt DateTime   @default(now())
+
+  rescate        Rescate?
+  registrosSalud RegistroSalud[]
+  solicitudes    Solicitud[]
+  adopcion       Adopcion?
+}
+
+// Ficha de ingreso al santuario (1 a 1 con Gato)
+model Rescate {
+  id               String   @id @default(uuid())
+  gatoId           String   @unique
+  gato             Gato     @relation(fields: [gatoId], references: [id], onDelete: Cascade)
+  nombreProvisional String?
+  fotoRescateUrl   String?
+  edadEstimada     String?
+  lugarRescate     String
+  condicion        String?
+  cuarentenaHasta  DateTime?
+  primerChequeoAt  DateTime?
+  fechaIngreso     DateTime @default(now())
+}
+
+// Carnet de vacunación + historial clínico
+model RegistroSalud {
+  id             String            @id @default(uuid())
+  gatoId         String
+  gato           Gato              @relation(fields: [gatoId], references: [id], onDelete: Cascade)
+  tipo           TipoRegistroSalud
+  nombre         String            // ej: Triple Felina
+  producto       String?           // ej: Pipeta Revolution Plus
+  lote           String?
+  fechaAplicada  DateTime
+  proximaDosis   DateTime?
+  veterinarioId  String?
+  veterinario    Usuario?          @relation(fields: [veterinarioId], references: [id])
+  notas          String?
+  createdAt      DateTime          @default(now())
+
+  @@index([gatoId])
+}
+
+// ───────────── ADOPCIONES ─────────────
+
+model Adoptante {
+  id        String   @id @default(uuid())
+  nombre    String
+  telefono  String                     // WhatsApp
+  email     String?
+  ci        String?
+  direccion String?
+  zona      String?                    // ej: Sopocachi, La Paz
+  createdAt DateTime @default(now())
+
+  solicitudes Solicitud[]
+}
+
+model Solicitud {
+  id               String          @id @default(uuid())
+  gatoId           String
+  gato             Gato            @relation(fields: [gatoId], references: [id])
+  adoptanteId      String
+  adoptante        Adoptante       @relation(fields: [adoptanteId], references: [id])
+  estado           EstadoSolicitud @default(NUEVA)
+  prioritaria      Boolean         @default(false)
+  puntajeMatch     Int?            // 0-100
+  tipoVivienda     String?
+  tieneMallas      Boolean         @default(false)
+  detalleHogar     String?
+  mascotasActuales String?
+  compromiso       String?         // trabajo, presupuesto, etc.
+  revisadaPorId    String?
+  revisadaPor      Usuario?        @relation("RevisadaPor", fields: [revisadaPorId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  adopcion Adopcion?
+
+  @@index([estado])
+  @@index([gatoId])
+}
+
+// Registro formal de entrega (paso final)
+model Adopcion {
+  id             String   @id @default(uuid())
+  solicitudId    String   @unique
+  solicitud      Solicitud @relation(fields: [solicitudId], references: [id])
+  gatoId         String   @unique
+  gato           Gato     @relation(fields: [gatoId], references: [id])
+  contratoUrl    String?              // contrato firmado
+  tutorAsignado  String?
+  kitEntregado   Boolean  @default(false)
+  fechaEntrega   DateTime @default(now())
+
+  recordatorios Recordatorio[]
+}
+
+model Recordatorio {
+  id          String           @id @default(uuid())
+  adopcionId  String
+  adopcion    Adopcion         @relation(fields: [adopcionId], references: [id], onDelete: Cascade)
+  tipo        TipoRecordatorio @default(SEGUIMIENTO_7_DIAS)
+  programadoPara DateTime
+  enviado     Boolean          @default(false)
+  enviadoAt   DateTime?
+}
+
+// ───────────── EXPERIENCIAS Y RESERVAS ─────────────
+
+model Experiencia {
+  id           String          @id @default(uuid())
+  tipo         TipoExperiencia
+  nombre       String          // ej: Tarde de Cine Libre
+  descripcion  String?
+  duracionMin  Int             @default(45)
+  aforo        Int
+  consumoMinimoBs Decimal      @default(0) @db.Decimal(10, 2)
+  activa       Boolean         @default(true)
+
+  sesiones Sesion[]
+}
+
+model Sesion {
+  id            String      @id @default(uuid())
+  experienciaId String
+  experiencia   Experiencia @relation(fields: [experienciaId], references: [id], onDelete: Cascade)
+  inicio        DateTime
+  fin           DateTime
+  detalle       String?     // ej: película de la cartelera
+  cupoDisponible Int
+
+  reservas Reserva[]
+
+  @@index([inicio])
+}
+
+model Reserva {
+  id          String        @id @default(uuid())
+  sesionId    String
+  sesion      Sesion        @relation(fields: [sesionId], references: [id])
+  nombre      String
+  telefono    String
+  personas    Int           @default(1)
+  butaca      String?       // puff / butaca (cine)
+  codigoQr    String        @unique
+  estado      EstadoReserva @default(CONFIRMADA)
+  createdAt   DateTime      @default(now())
+
+  @@index([sesionId])
+}
+
+// ───────────── CAFETERÍA: MESAS Y PEDIDOS ─────────────
+
+model Mesa {
+  id      String  @id @default(uuid())
+  numero  Int     @unique
+  codigoQr String @unique
+  pedidos Pedido[]
+}
+
+model Producto {
+  id          String   @id @default(uuid())
+  nombre      String   // ej: Mishi Moka
+  categoria   String   // bebida, snack, etc.
+  precioBs    Decimal  @db.Decimal(10, 2)
+  fotoUrl     String?
+  disponible  Boolean  @default(true)
+
+  items ItemPedido[]
+}
+
+model Pedido {
+  id            String       @id @default(uuid())
+  mesaId        String
+  mesa          Mesa         @relation(fields: [mesaId], references: [id])
+  estado        EstadoPedido @default(PENDIENTE)
+  propinaBs     Decimal      @default(0) @db.Decimal(10, 2) // va al Fondo de Salud Felina
+  totalBs       Decimal      @db.Decimal(10, 2)
+  llamoMesero   Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+
+  items ItemPedido[]
+  pago  Pago?
+
+  @@index([estado])
+}
+
+model ItemPedido {
+  id         String   @id @default(uuid())
+  pedidoId   String
+  pedido     Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  productoId String
+  producto   Producto @relation(fields: [productoId], references: [id])
+  cantidad   Int
+  precioUnitBs Decimal @db.Decimal(10, 2)
+  nota       String?
+}
+
+model Pago {
+  id        String     @id @default(uuid())
+  pedidoId  String     @unique
+  pedido    Pedido     @relation(fields: [pedidoId], references: [id])
+  metodo    MetodoPago
+  montoBs   Decimal    @db.Decimal(10, 2)
+  comprobanteUrl String?
+  createdAt DateTime   @default(now())
+}
+
+// ───────────── FINANZAS Y STOCK ─────────────
+
+model Movimiento {
+  id             String              @id @default(uuid())
+  tipo           TipoMovimiento
+  categoria      CategoriaMovimiento
+  montoBs        Decimal             @db.Decimal(10, 2)
+  descripcion    String?
+  metodoPago     MetodoPago?
+  comprobanteUrl String?
+  registradoPorId String
+  registradoPor  Usuario             @relation(fields: [registradoPorId], references: [id])
+  fecha          DateTime            @default(now())
+
+  @@index([fecha])
+  @@index([tipo, categoria])
+}
+
+model Insumo {
+  id          String   @id @default(uuid())
+  nombre      String   // ej: Royal Canin Kitten
+  categoria   String   // alimento, arena, medicina, bar
+  unidad      String   // kg, bolsa, unidad
+  stockActual Decimal  @db.Decimal(10, 2)
+  stockMinimo Decimal  @db.Decimal(10, 2)
+  updatedAt   DateTime @updatedAt
+}

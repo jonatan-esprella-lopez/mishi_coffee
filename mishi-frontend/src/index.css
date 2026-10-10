@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/* ---------- LIGHT (por defecto) ---------- */
+:root {
+  /* Superficies */
+  --background: #f4f7fc;
+  --surface: #ffffff;
+  --surface-alt: #e6edf8; 
+  --border: #cbd6ea;
+
+  /* Texto */
+  --foreground: #14213d;
+  --muted: #5a6b8c;
+
+  /* Primary: amarillo (acciones principales) */
+  --primary: #f5b21e;
+  --on-primary: #1a2b52;
+  --primary-container: #ffe7a8;
+  --on-primary-container: #4a3300;
+
+  /* Secondary: azul Mishin */
+  --secondary: #1f4287;
+  --on-secondary: #ffffff;
+  --secondary-container: #dce6f8;
+  --on-secondary-container: #0f2554;
+
+  /* Tertiary: verde salvia (éxito / adoptado / disponible) */
+  --tertiary: #5e8c6a;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #d3ead9;
+  --on-tertiary-container: #12301c;
+
+  /* Estados */
+  --danger: #c62828;
+  --on-danger: #ffffff;
+
+  /* Foco / anillo */
+  --ring: #f5b21e;
+}
+
+/* ---------- DARK (azul noche como el cartel del local) ---------- */
+.dark {
+  --background: #0d1a33;
+  --surface: #14264a;
+  --surface-alt: #1b3260;
+  --border: #2a4275;
+
+  --foreground: #eef2fa;
+  --muted: #9db0d3;
+
+  --primary: #f6be3b;
+  --on-primary: #10203f;
+  --primary-container: #5c4200;
+  --on-primary-container: #ffe7a8;
+
+  --secondary: #8fb1ee;
+  --on-secondary: #0b1b3d;
+  --secondary-container: #2a4a8a;
+  --on-secondary-container: #dce6f8;
+
+  --tertiary: #8db89a;
+  --on-tertiary: #0e2416;
+  --tertiary-container: #1f4a2e;
+  --on-tertiary-container: #d3ead9;
+
+  --danger: #ef6b6b;
+  --on-danger: #3a0808;
+
+  --ring: #f6be3b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+
+  --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
+
+  --color-ring: var(--ring);
+}
+
+/* Tipografías y formas */
+@theme {
+  --font-heading: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Nunito Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  --radius-card: 1.25rem;
+  --radius-pill: 9999px;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
