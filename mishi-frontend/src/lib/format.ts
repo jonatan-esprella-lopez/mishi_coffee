@@ -27,3 +27,7 @@ export function formatSesion(iso: string): string {
   if (diff === 1) return `Mañana ${hora}`;
   return `${d.toLocaleDateString("es-BO", { weekday: "short" })} ${hora}`;
 }
+
+export function formatFecha(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-BO", { day: "numeric", month: "short", year: "numeric" });
+}
