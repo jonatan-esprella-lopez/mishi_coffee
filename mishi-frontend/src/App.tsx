@@ -8,6 +8,7 @@ import UiPage from "./pages/dev/UiPage";
 import MichisPage from "./pages/public/MichisPage";
 import MichiDetallePage from "./pages/public/MichiDetallePage";
 import SolicitudAdopcionPage from "./pages/public/SolicitudAdopcionPage";
+import SolicitudConfirmacionPage from "./pages/public/SolicitudConfirmacionPage";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Route path="michis" element={<MichisPage/>} />
         <Route path="michis/:id" element={<MichiDetallePage />} />
         <Route path="michis/:id/adoptar" element={<SolicitudAdopcionPage />} />
-        <Route path="solicitud/confirmacion" element={<PlaceholderPage title="Solicitud recibida" />} />
+        <Route path="solicitud/confirmacion" element={<SolicitudConfirmacionPage />} />
         <Route path="reservas" element={<PlaceholderPage title="Reservas" />} />
         <Route path="menu" element={<PlaceholderPage title="Menú" />} />
         {import.meta.env.DEV && <Route path="ui" element={<UiPage />} />}
