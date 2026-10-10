@@ -19,3 +19,5 @@ export const ESTADO_SOLICITUD: Record<EstadoSolicitud, Meta> = {
   RECHAZADA: { label: "Rechazada", tone: "danger" },
   ENTREGADA: { label: "Entregada", tone: "success" },
 };
+
+export const ESTADOS_PUBLICOS: EstadoGato[] = ["DISPONIBLE", "EN_PROCESO"];

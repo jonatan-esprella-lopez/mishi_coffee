@@ -14,3 +14,16 @@ export function formatEdad(meses: number): string {
   const a = `${años} ${años === 1 ? "año" : "años"}`;
   return resto ? `${a} y ${resto} ${resto === 1 ? "mes" : "meses"}` : a;
 }
+
+export function formatSesion(iso: string): string {
+  const d = new Date(iso);
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const dia = new Date(d);
+  dia.setHours(0, 0, 0, 0);
+  const diff = Math.round((dia.getTime() - hoy.getTime()) / 86_400_000);
+  const hora = d.toLocaleTimeString("es-BO", { hour: "2-digit", minute: "2-digit", hour12: false });
+  if (diff === 0) return `Hoy ${hora}`;
+  if (diff === 1) return `Mañana ${hora}`;
+  return `${d.toLocaleDateString("es-BO", { weekday: "short" })} ${hora}`;
+}
