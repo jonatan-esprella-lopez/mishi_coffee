@@ -5,13 +5,14 @@ import DashboardPage from "./pages/admin/DashboardPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import HomePage from "./pages/public/HomePage";
 import UiPage from "./pages/dev/UiPage";
+import MichisPage from "./pages/public/MichisPage";
 
 function App() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="michis" element={<PlaceholderPage title="Michis" />} />
+        <Route path="michis" element={<MichisPage/>} />
         <Route path="michis/:id" element={<PlaceholderPage title="Detalle del michi" />} />
         <Route path="michis/:id/adoptar" element={<PlaceholderPage title="Solicitud de adopción" />} />
         <Route path="solicitud/confirmacion" element={<PlaceholderPage title="Solicitud recibida" />} />

@@ -24,7 +24,7 @@ export default function Header({ nav }: { nav: NavItem[] }) {
             <DesktopNav items={nav} />
 
             <div className="flex flex-row items-center justify-center gap-2">
-                {/* <ThemeToggle /> */}
+                <ThemeToggle />
                 {isAdmin ? (
                     <button 
                         type="button"
