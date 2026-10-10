@@ -24,7 +24,7 @@ export const publicNav: NavItem[] = [
 ];
 
 export const adminNav: NavItem[] = [
-  { label: "Adopción", to: "/admin", icon: PawPrint, end: true },
+  { label: "Adopción", to: "/admin/adopcion", icon: PawPrint },
   { label: "Michis", to: "/admin/michis", icon: LayoutGrid },
   { label: "Panel Bs", to: "/admin/panel", icon: ChartNoAxesColumn },
   { label: "Seguimiento", to: "/admin/seguimiento", icon: MessageSquareText },
