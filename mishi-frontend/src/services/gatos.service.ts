@@ -31,3 +31,11 @@ export async function getGato(id: string): Promise<GatoDetalle | null> {
     registrosSalud: registrosSaludMock.filter((r) => r.gatoId === id),
   };
 }
+
+export async function getResumenGatos() {
+  await simulateLatency(100);
+  return {
+    residentes: gatosMock.filter((g) => g.estado !== "ADOPTADO").length,
+    adoptados: gatosMock.filter((g) => g.estado === "ADOPTADO").length,
+  };
+}
